@@ -1,127 +1,116 @@
-const addBookEl = document.querySelector(".addBooks_button");
+const addBooksButtonEl = document.querySelector(".addBooks_button");
 const addBookContainerEl = document.querySelector(".addBook__container")
-const addBookPopupEl = document.querySelector(".addBook")
-const containerEl = document.querySelector(".container");
-const closeIconEl = document.querySelector("span");
-const popupAddBookButtonEl = document.querySelector(".addBook__button1");
-const titleInputEl = document.getElementById("titleInput");
-const authorInputEl = document.getElementById("authorInput");
-const pagesInputEl = document.getElementById("pagesInput");
-const bookContainerEl = document.querySelector(".main__books_parent");
-function Library(name, author, pages)
-{
-    this.name = name;
-    this.author = author;
-    this.pages = pages;
-    
-}
+const crossButton = document.querySelector('span');
+const actualAddBookButtonEl = document.querySelector('.addBook__button1')
+const titleInputEl = document.getElementById('titleInput')
+const authorInputEl = document.getElementById('authorInput')
+const pagesInputEl = document.getElementById('pagesInput')
+const mainBookContainer = document.querySelector('.main__books_parent')
 
+
+
+
+
+//constructor for storing books in Object form
+function Library(title, author, pages) {
+    this.title = title
+    this.author = author
+    this.pages = pages
+}
+let LibraryArray = new Array();
+//code that will run at every beginning
 getFromLocalStorage();
-let bookArray = new Array();
+updateDOM();
 
 
-function closePopupEl() {
-    addBookContainerEl.classList.remove('open');
-}
+function pushToLocalStorage() {
 
-function openPopupEl() {
-    addBookContainerEl.classList.add('open');
-}
+    let key = 0;
+    for (let el of LibraryArray) {
+        let s = "";
+        s += el.title + "$";
+        s += el.author + "$";
+        s += el.pages;
 
-function createBookElement(name, author, pages) {
-
-    let mainDiv = document.createElement('div');
-    mainDiv.setAttribute('class', 'main__books_child');
-    mainDiv.innerHTML = `
-        <h3 class="book__title">${name}</h3>
-        <h3 class="book__author">${author}</h3>
-        <h3 class="book__pages">${pages} Pages</h3>
-
-        <button id="read_button">Read</button>
-        <button id="not_read_button">Not Read</button>
-    `
-    return mainDiv;
-}
-
-function storeInLocalStorage()
-{
-    for(let i = 0; i < bookArray.length; i++)
-    {
-        let currBookString = `${bookArray[i].name}&${bookArray[i].author}&${bookArray[i].pages}&`;
-        localStorage.setItem(`${i}`, currBookString);
+        localStorage.setItem(key, s);
+        key++;
+        console.log("Pushed to local storage successfully.")
     }
 }
 
-function getFromLocalStorage()
-{
-    let curr = "";
-    for(let i = 0; i < localStorage.length; i++)
-    {
-        let S = i[`${i}`].value;
-        let name = "", author = "", pages ="";
-        
-        for(let c of S)
-        {
-            if(c != '&')
-                curr += c;
-            else
-            {
-                if(name == "")
-                    name = curr;
-                else if(author == "")
-                    author = curr;
-                else
-                    pages = curr;
-                
-                curr = "";
-            }
-        }
-        let newBook = new Library(name, author, pages);
-        bookArray.push(newBook);
+function getFromLocalStorage() {
+
+    for (let i = 0; i < localStorage.length; i++) {
+
+        let bookContent = localStorage[i].split('$');
+        let bookObj = new Library(bookContent[0], bookContent[1], bookContent[2]);
+        LibraryArray.push(bookObj);
     }
 }
 
+function openAddBookPopup() {
+    addBookContainerEl.classList.add("open")
+}
+function closeAddBookPopup() {
+    addBookContainerEl.classList.remove("open");
+}
 function updateDOM() {
 
-    bookContainerEl.innerHTML = "";
-    for(el of bookArray)
-    {
-        let book = createBookElement(el.name, el.author, el.pages);
-        bookContainerEl.appendChild(book);
+    mainBookContainer.innerHTML = "";
+    for (let el of LibraryArray) {
+        let element = document.createElement("div");
+        element.classList.add("main__books_child");
+        element.innerHTML = `
+                    <h3 class="book__title">${el.title}</h3>
+                    <h3 class="book__author">${el.author}</h3>
+                    <h3 class="book__pages">${el.pages} Pages</h3>
+
+                    <button id="read_button">Read</button>
+                    <button id="not_read_button">Not Read</button>
+        `
+        mainBookContainer.appendChild(element);
+
     }
 }
-
-function addBookInObj() {
-
-    let name = titleInputEl.value;
+function storeBookInObj() {
+    let title = titleInputEl.value;
     let author = authorInputEl.value;
     let pages = pagesInputEl.value;
 
-    let newBook = new Library(name, author, pages);
-    bookArray.push(newBook);
-
-    titleInputEl.value = "";
-    authorInputEl.value = "";
-    pagesInputEl.value = "";
-    closePopupEl();
+    let newBook = new Library(title, author, pages);
+    LibraryArray.push(newBook);
+    pushToLocalStorage();
     updateDOM();
+    closeAddBookPopup();
 }
 
 
 
 
-function main() {
-
-    //open popup
-    updateDOM();
-    addBookEl.addEventListener('click', openPopupEl);
-    closeIconEl.addEventListener('click', closePopupEl);
-
-    popupAddBookButtonEl.addEventListener('click', addBookInObj);
-    
 
 
-}
 
-main();
+
+
+
+
+
+
+addBooksButtonEl.addEventListener('click', openAddBookPopup);
+crossButton.addEventListener('click', closeAddBookPopup);
+actualAddBookButtonEl.addEventListener('click', storeBookInObj)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
