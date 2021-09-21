@@ -77,6 +77,9 @@ function storeBookInObj() {
     let author = authorInputEl.value;
     let pages = pagesInputEl.value;
 
+    titleInputEl.value = "";
+    authorInputEl.value = "";
+    pagesInputEl.value = "";
     let newBook = new Library(title, author, pages);
     LibraryArray.push(newBook);
     pushToLocalStorage();
