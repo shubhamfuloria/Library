@@ -25,6 +25,7 @@ updateDOM();
 
 function pushToLocalStorage() {
 
+    localStorage.clear();
     let key = 0;
     for (let el of LibraryArray) {
         let s = "";
@@ -46,7 +47,7 @@ function getFromLocalStorage() {
         let bookContent = localStorage[i].split('$');
         let readStatus = eval(bookContent[3]);
         let bookObj = new Library(bookContent[0], bookContent[1], bookContent[2], readStatus);
-        
+
         LibraryArray.push(bookObj);
     }
 }
@@ -64,6 +65,7 @@ function updateDOM() {
         let element = document.createElement("div");
         element.classList.add("main__books_child");
         element.innerHTML = `
+                    <i class="fas fa-trash" title = "Delete"></i>
                     <h3 class="book__title">${el.title}</h3>
                     <h3 class="book__author">${el.author}</h3>
                     <h3 class="book__pages">${el.pages} Pages</h3>
@@ -73,7 +75,7 @@ function updateDOM() {
         `
         if (el.read)
             element.classList.add('read');
-            
+
         mainBookContainer.appendChild(element);
 
     }
@@ -94,7 +96,7 @@ function storeBookInObj() {
 }
 
 function updateReadStatus(bookName, readStatus) {
-    
+
     for (el of LibraryArray) {
         if (el.title == bookName) {
             el.read = readStatus;
@@ -103,6 +105,23 @@ function updateReadStatus(bookName, readStatus) {
     }
     pushToLocalStorage();
     updateDOM();
+}
+
+function deleteBook(bookName) {
+    
+    console.log("I am also running")
+    for(el of LibraryArray) {
+
+        if(el.title == bookName) {
+            
+            let index = LibraryArray.indexOf(el);
+            LibraryArray.splice(index, 1);
+            pushToLocalStorage();
+            updateDOM();
+            console.log("Delete Successfully")
+            break;
+        }
+    }
 }
 
 mainBookContainer.addEventListener('click', function (e) {
@@ -115,6 +134,12 @@ mainBookContainer.addEventListener('click', function (e) {
     else if (target.classList.contains('not_read_button')) {
         let clickedBookName = target.previousElementSibling.previousElementSibling.previousElementSibling.previousElementSibling.textContent;
         updateReadStatus(clickedBookName, false);
+    }
+    else if (target.classList.contains('fa-trash')) {
+
+        let clickedBookName = target.nextElementSibling.nextElementSibling.textContent;
+        deleteBook(clickedBookName);
+        console.log("I am running :)")
     }
 });
 
