@@ -8,8 +8,6 @@ const pagesInputEl = document.getElementById('pagesInput')
 const mainBookContainer = document.querySelector('.main__books_parent');
 
 
-
-
 //constructor for storing books in Object form
 function Library(title, author, pages, read = false) {
     this.title = title
@@ -106,7 +104,6 @@ function updateReadStatus(bookName, readStatus) {
     pushToLocalStorage();
     updateDOM();
 }
-
 function deleteBook(bookName) {
     
     console.log("I am also running")
@@ -123,7 +120,6 @@ function deleteBook(bookName) {
         }
     }
 }
-
 mainBookContainer.addEventListener('click', function (e) {
 
     const target = e.target;
@@ -142,17 +138,6 @@ mainBookContainer.addEventListener('click', function (e) {
         console.log("I am running :)")
     }
 });
-
-
-
-
-
-
-
-
-
-
-
 addBooksButtonEl.addEventListener('click', openAddBookPopup);
 crossButton.addEventListener('click', closeAddBookPopup);
 actualAddBookButtonEl.addEventListener('click', storeBookInObj)
